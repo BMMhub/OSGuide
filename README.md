@@ -5,7 +5,7 @@
 1. 需要自行准备Shadowsocks服务，并且已经具备一定的翻墙能力。
 1. 本实践适合性能比较高的Shadowsocks服务，带宽和流量都有所保证。
 1. 此次成文于2017.03.26，不保证今后是否有效或是否发生变动。
-1. 为了最大的适用性，本文不回存在显式的下载链接。
+1. 为了最大的适用性，本文不会存在显式的下载链接。
 
 ## 1. 参考和原理
 
@@ -15,13 +15,13 @@
 
 实际上纯粹的Shadowsocsk协议只能保证第二部分的达成，而关于dns的相关问题就需要通过某种“代理dns”或“无污染dns”来解决。
 
-考虑到现有的Shadowsocks服务的带宽以及流量都能满足比较高的要求，兼顾本地网络防蚊性能，对于以上两部分的实现，有如下翻墙规则：
+考虑到现有的Shadowsocks服务的带宽以及流量都能满足比较高的要求，兼顾本地网络访问性能，对于以上两部分的实现，有如下翻墙规则：
 
 1. 对于[gfwlist](https://github.com/gfwlist/gfwlist)所列出的域名，一律使用“代理dns”进行解析；未列出的域名都使用正常默认dns进行解析。
 2. 对解析出的ip地址进行地理位置判断，中国大陆ip不通过Shadowsocks访问，其他地区ip一律通过Shadowsocks访问。
 
-对于第一条规则，本文选择通过`dnsmasq`服务对不同的域名制定相应解析规则，决定是通过普通dns解析还是通过"代理dns"解析。
-对于第二条规则，本文选择直接在[OpenWrt LuCI for Shadowsocks-libev](https://github.com/shadowsocks/luci-app-shadowsocks)配套的配置界面中进行配置。
+对于第一条规则，可以通过`dnsmasq`服务对不同的域名制定相应解析规则，决定是通过普通dns解析还是通过"代理dns"解析。
+对于第二条规则，可以直接在[OpenWrt LuCI for Shadowsocks-libev](https://github.com/shadowsocks/luci-app-shadowsocks)配套的配置界面中进行配置。
 
 ## 2. 一般实施步骤
 
@@ -95,7 +95,7 @@
 
 此时所有实施工作已经完成。
 
-## 其他需要说明的
+## 3. 其他需要说明的
 
 ### 1. 如何停止翻墙服务
 
@@ -115,15 +115,15 @@
 
 ### 3. 如何更新gfwlist域名
 
-1. 登录路由器shell，在root目录下输入命令`python config_dnsmaq.py`。
+- 登录路由器shell，在root目录下输入命令`python config_dnsmaq.py`。
 
 ### 4. 如何更新中国ip地址
 
-1. 登录路由器shell。
+- 登录路由器shell。
 
-1. >wget -O- 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest' | awk -F\| '/CN\|ipv4/ { printf("%s/%d\n", $4, 32-log($5)/log(2)) }' > /etc/ignore.list
+- >wget -O- 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest' | awk -F\| '/CN\|ipv4/ { printf("%s/%d\n", $4, 32-log($5)/log(2)) }' > /etc/ignore.list
 
-1. 登录luci界面，停止然后重新开启Shadowsocks相关服务。
+- 登录luci界面，停止然后重新开启Shadowsocks相关服务。
 
 ### 5. 如何自定义ip地址通过规则
 
